@@ -1,0 +1,15 @@
+body {
+	height: 100vh;
+	background-color: black;
+}
+
+#background-image {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 92%;
+	opacity: 8%;
+	background-image: url("../images/mtg_logo.png");
+	background-repeat: no-repeat;
+	background-position: center;
+}

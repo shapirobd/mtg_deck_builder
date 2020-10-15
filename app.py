@@ -2,7 +2,7 @@ import requests
 import pdb
 import os
 
-from flask import Flask, request, render_template, redirect, g
+from flask import Flask, session, request, render_template, redirect, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Friendship, Message, Card, Bookmark, Deck, CardDeck, Post
 
@@ -22,3 +22,23 @@ connect_db(app)
 toolbar = DebugToolbarExtension(app)
 
 CURR_USER_KEY = 'curr-user'
+
+
+@app.before_request
+def add_user_to_g():
+    """If we're logged in, add curr user to Flask global"""
+    if CURR_USER_KEY in session:
+        g.user = session[CURR_USER_KEY]
+    else:
+        g.user = None
+
+
+@app.route('/')
+def welcome():
+    """
+    If we're not logged in, show the welcome page to login/signup.
+    If we are logged in, show the user's home page.
+    """
+    if not g.user:
+        return render_template('welcome.html')
+    return redirect('/home')

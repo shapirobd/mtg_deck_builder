@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+	<div class="row justify-content-center my-5">
+		<div class="col-10 align-items-center my-5">
+			<div class="jumbotron my-5 text-white bg-transparent">
+				<h1 class="display-4 text-center">Welcome to MTG Deck Builder!</h1>
+				<p class="lead text-center">
+					Find information on any card from Magic: The Gathering, build your own
+					custom decks, share your decks with friends, and more!
+				</p>
+				<hr class="my-4" />
+				<p class="text-center">
+					If you have not created an account already,
+					<a href="/register">click here to register.</a>
+				</p>
+				<div class="row justify-content-center">
+					<a
+						class="btn btn-primary btn-md px-4 mx-5"
+						href="/login"
+						role="button"
+						>Login</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
