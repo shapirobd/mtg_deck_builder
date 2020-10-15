@@ -1,7 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy()
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_bcrypt import Bcrypt
-from app import app
+from flask import jsonify
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -10,6 +10,16 @@ bcrypt = Bcrypt()
 def connect_db(app):
     db.app = app
     db.init_app(app)
+
+
+class Friendship(db.Model):
+    __tablename__ = 'friendships'
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user1_username = db.Column(db.Text, db.ForeignKey(
+        'users.username', ondelete="cascade"))
+    user2_username = db.Column(db.Text, db.ForeignKey(
+        'users.username', ondelete="cascade"))
 
 
 class User(db.Model):
@@ -24,10 +34,10 @@ class User(db.Model):
         'Card', secondary='bookmarks', backref='user')
     decks = db.relationship('Deck', backref='user')
     friends = db.relationship('User', secondary='friendships', primaryjoin=(
-        Friendship.user1_id == id), secondaryjoin=(Friendship.user2_id == id))
+        Friendship.user1_username == username), secondaryjoin=(Friendship.user2_username == username))
     posts = db.relationship('Post', backref='user')
-    messages = db.relationship('Message', backref='user')
-    conversations = db.relationship('Conversation', backref='users')
+    messages = db.relationship(
+        'Message', backref='user')
 
     @classmethod
     def signup(cls, username, password, email, image_url):
@@ -40,24 +50,14 @@ class User(db.Model):
         return user
 
     @classmethod
-    def authenticate(cls, username, password)
+    def authenticate(cls, username, password):
 
-      user = cls.query.filter_by(username=username).first()
-       if user:
+        user = cls.query.filter_by(username=username).first()
+        if user:
             is_auth = bcrypt.check_password_hash(user.password, password)
             if is_auth:
                 return user
         return false
-
-
-class Friendship(db.Model):
-    __tablename__ = 'friendships'
-
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user1_id = db.Column(db.Integer, db.ForeignKey(
-        'users.id', ondelete="cascade"))
-    user2_id = db.Column(db.Integer, db.ForeignKey(
-        'users.id', ondelete="cascade"))
 
 
 class Message(db.Model):
@@ -68,13 +68,15 @@ class Message(db.Model):
     date_time = db.Column(db.DateTime, nullable=False,
                           default=datetime.utcnow)
     username = db.Column(db.Text, db.ForeignKey('users.username'))
-    conversation = db.relationship('Conversation', backref='messages')
+    # conversation = db.relationship('Conversation', backref='messages')
 
 
-class Conversation(db.Model):
-    __tablename__ = 'conversations'
+# class Conversation(db.Model):
+#     __tablename__ = 'conversations'
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     message_id = db.Column(db.Integer, db.ForeignKey(
+#         'messages.id'))
 
 
 class Card(db.Model):
@@ -83,10 +85,22 @@ class Card(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     card_type = db.Column(db.Text, nullable=False)
+    colors = db.Column(db.Text, nullable=False)
     rarity = db.Column(db.Text, nullable=False)
-    release_date = db.Column(db.Text, nullable=False)
+    set_name = db.Column(db.Text, nullable=False)
     users = db.relationship('User', secondary='bookmarks', backref='cards')
     decks = db.relationship('Deck', secondary='cards_decks', backref='cards')
+
+    @ classmethod
+    def create_all_cards(cls, cards):
+
+        for card in cards:
+
+            colors = ' '.join(card['colors'])
+
+            new_card = Card(name=card['name'], card_type=card['type'],
+                            rarity=card['rarity'], set_name=card['setName'], colors=colors)
+            db.session.add(new_card)
 
 
 class Bookmark(db.Model):
