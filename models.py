@@ -84,7 +84,11 @@ class Card(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.Text)
+    text = db.Column(db.Text)
     card_type = db.Column(db.Text, nullable=False)
+    power = db.Column(db.Integer)
+    toughness = db.Column(db.Integer)
     colors = db.Column(db.Text, nullable=False)
     rarity = db.Column(db.Text, nullable=False)
     set_name = db.Column(db.Text, nullable=False)
@@ -98,8 +102,13 @@ class Card(db.Model):
 
             colors = ' '.join(card['colors'])
 
-            new_card = Card(name=card['name'], card_type=card['type'],
-                            rarity=card['rarity'], set_name=card['setName'], colors=colors)
+            image_url = card.get('imageUrl', 'static/images/mtg_default.jpg')
+            text = card.get('text')
+            power = card.get('power')
+            toughness = card.get('toughness')
+
+            new_card = Card(name=card['name'], image_url=image_url, text=text, card_type=card['type'],
+                            power=power, toughness=toughness, rarity=card['rarity'], set_name=card['setName'], colors=colors)
             db.session.add(new_card)
 
 

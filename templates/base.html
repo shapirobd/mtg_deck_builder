@@ -85,6 +85,13 @@
 						Search
 					</button>
 				</form>
+				{% if g.user %}
+				<p class="nav-item">
+					<a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true"
+						>Logout</a
+					>
+				</p>
+				{% else %} {% endif %}
 			</div>
 		</nav>
 		<div class="container" id="background-image"></div>

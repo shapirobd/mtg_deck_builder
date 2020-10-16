@@ -93,6 +93,12 @@ def register():
     return render_template('register.html', form=form)
 
 
+@app.route('/home')
+def show_homepage():
+    cards = Card.query.all()
+    return render_template('home.html', cards=cards)
+
+
 def check_confirmed_pwd(pwd, confirmed_pwd):
     if pwd != confirmed_pwd:
         flash('Passwords must match - please try again.', 'danger')

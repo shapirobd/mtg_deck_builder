@@ -1,1 +1,26 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+
+<div class="container">
+	<div class="row">
+		{% for card in cards %}
+		<div class="col-4">
+			{% if card.image_url != 'static/images/mtg_default.jpg' %} {% else %} {%
+			endif %}
+			<div class="card text-white bg-transparent my-4" style="width: 18rem">
+				<img src="{{card.image_url}}" class="card-img-top" alt="..." />
+				<div class="card-body scroll">
+					<h5 class="card-title">{{card.name}}</h5>
+					{% for attr, value in card.__dict__.items() %} {% if attr !=
+					'image_url' and attr != 'text' and attr != '_sa_instance_state' and
+					value and value != '' %}
+					<p><b>{{attr}}:</b> {{value}}</p>
+					{% else %} {% endif %} {% endfor %}
+				</div>
+				<a href="#" class="btn btn-primary">Add to Deck</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock %}

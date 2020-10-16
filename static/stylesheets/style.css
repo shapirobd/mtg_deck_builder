@@ -13,3 +13,8 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 }
+
+.scroll {
+	max-height: 275px;
+	overflow-y: auto;
+}
