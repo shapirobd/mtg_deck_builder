@@ -27,7 +27,7 @@ class User(db.Model):
 
     username = db.Column(db.String(25), primary_key=True,
                          unique=True, nullable=False)
-    password = db.Column(db.String(8), nullable=False)
+    password = db.Column(db.String, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
     image_url = db.Column(db.Text)
     bookmarked_cards = db.relationship(
@@ -40,12 +40,12 @@ class User(db.Model):
         'Message', backref='user')
 
     @classmethod
-    def signup(cls, username, password, email, image_url):
+    def signup(cls, username, password, email):
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-        user = User(username=username, password=password,
-                    email=email, image_url=image_url)
+        user = User(username=username, password=hashed_pwd,
+                    email=email)
         db.session.add(user)
         return user
 
@@ -57,7 +57,7 @@ class User(db.Model):
             is_auth = bcrypt.check_password_hash(user.password, password)
             if is_auth:
                 return user
-        return false
+        return False
 
 
 class Message(db.Model):
@@ -91,7 +91,7 @@ class Card(db.Model):
     users = db.relationship('User', secondary='bookmarks', backref='cards')
     decks = db.relationship('Deck', secondary='cards_decks', backref='cards')
 
-    @ classmethod
+    @classmethod
     def create_all_cards(cls, cards):
 
         for card in cards:
