@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+%}
+<div class="container">
+	<div class="row my-5 justify-content-center">
+		<div class="col-xs-6 col-md-6 col-lg-4 my-5">
+			<h1 class="display-6 text-white">Create New Deck</h1>
+			<form method="POST" action="" class="my-3">
+				{{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
+				'hidden' %}
+				<p>
+					{{field.label(class_='text-white')}} {{field(class_="form-control")}}
+					{% for error in field.errors %}
+					<span class="form-text text-danger">{{error}}</span>
+					{% endfor %}
+				</p>
+				{% endfor %}
+				<button class="btn btn-success" type="submit">Create Deck</button>
+				{% for category, message in get_flashed_messages(with_categories=True)
+				%}
+				<p class="text-{{category}} text-right">{{ message }}</p>
+				{% endfor %}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
