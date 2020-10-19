@@ -111,6 +111,8 @@ def register():
 @app.route('/home')
 def show_homepage():
     cards = Card.query.all()
+    decks = Deck.query.all()
+
     bookmarks = Bookmark.query.all()
     bookmarked_card_ids = [bookmark.card_id for bookmark in bookmarks]
     type_form = TypeForm()
@@ -119,7 +121,7 @@ def show_homepage():
     power_form = PowerForm()
     toughness_form = ToughnessForm()
 
-    return render_template('home.html', cards=cards, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
+    return render_template('home.html', cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
 
 
 def check_confirmed_pwd(pwd, confirmed_pwd):
@@ -137,7 +139,15 @@ def view_decks():
 @app.route('/decks/<int:deck_id>')
 def show_deck(deck_id):
     deck = Deck.query.get(deck_id)
-    return render_template('deck.html')
+
+    bookmarks = Bookmark.query.all()
+    bookmarked_card_ids = [bookmark.card_id for bookmark in bookmarks]
+    type_form = TypeForm()
+    type_form.card_type.choices = TYPES
+
+    power_form = PowerForm()
+    toughness_form = ToughnessForm()
+    return render_template('deck.html', deck=deck, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
 
 
 @app.route('/decks/<int:deck_id>/delete', methods=['POST'])
@@ -173,7 +183,7 @@ def logout():
     return redirect('/login')
 
 
-@app.route('/card/<int:card_id>/bookmark', methods=['GET', 'POST'])
+@app.route('/cards/<int:card_id>/bookmark', methods=['GET', 'POST'])
 def add_bookmark(card_id):
     if g.user:
         bookmark = Bookmark(card_id=card_id, username=session[CURR_USER_KEY])
@@ -184,7 +194,7 @@ def add_bookmark(card_id):
     return redirect('/login')
 
 
-@app.route('/card/<int:card_id>/unbookmark', methods=['GET', 'POST'])
+@app.route('/cards/<int:card_id>/unbookmark', methods=['GET', 'POST'])
 def remove_bookmark(card_id):
     if g.user:
         bookmark = Bookmark.query.filter(Bookmark.card_id == card_id).first()
@@ -193,3 +203,19 @@ def remove_bookmark(card_id):
         return redirect('/home')
     flash('Permission denied - must be logged in to bookmark a card.')
     return redirect('/login')
+
+
+@app.route('/cards/<int:card_id>/decks/<int:deck_id>', methods=['POST'])
+def add_to_deck(card_id, deck_id):
+    if g.user:
+        card = Card.query.get(card_id)
+        deck = Deck.query.get(deck_id)
+
+        card_deck = CardDeck(card_id=card_id, deck_id=deck_id)
+
+        deck.cards.append(card)
+
+        db.session.add(card_deck)
+        db.session.add(card)
+        db.session.commit()
+        return redirect('/home')

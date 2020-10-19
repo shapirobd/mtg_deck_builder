@@ -96,10 +96,8 @@
 		<div class="container scroll" id="main">
 			<div class="row">
 				{% for card in cards %}
-				<div class="col-4">
-					{% if card.image_url != 'static/images/mtg_default.jpg' %} {% else %}
-					{% endif %}
-					<div class="card text-white bg-transparent my-4" style="width: 18rem">
+				<div class="col-3">
+					<div class="card text-white bg-transparent my-4 mx-3" style="width: 15rem">
 						<img
 							src="{{card.image_url}}"
 							class="card-img-top mtg-card"
@@ -128,15 +126,37 @@
                         <div class="col">
                             <div class="row">
                                 {% if card.id in bookmarked_card_ids %}
-                                    <form action="/card/{{card.id}}/unbookmark" method='POST'>
-                                        <button class="col-2 btn btn-md btn-primary"><i class="fas fa-bookmark"></i></button>
+                                    <form action="/cards/{{card.id}}/unbookmark" method='POST'>
+                                        <button class="col btn btn-md btn-primary"><i class="fas fa-bookmark"></i></button>
                                     </form>
                                 {% else %}
-                                    <form action="/card/{{card.id}}/bookmark" method='POST'>
-                                        <button class="col-2 btn btn-md btn-primary"><i class="far fa-bookmark"></i></button>
+                                    <form action="/cards/{{card.id}}/bookmark" method='POST'>
+                                        <button class="col btn btn-md btn-primary"><i class="far fa-bookmark"></i></button>
                                     </form>
                                 {% endif %}
-						        <a href="#" class="col btn btn-md btn-primary ml-1">Add to Deck</a>
+                                <button
+							        class="col btn btn-sm btn-secondary ml-1"
+							        type="button"
+							        data-toggle="collapse"
+							        data-target="#add-{{card.id}}"
+							        aria-expanded="false"
+							        aria-controls="collapseExample"
+						        >
+							        Add to Deck
+						        </button>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="row justify-content-center">
+                                <div class="collapse col" id="add-{{card.id}}">
+                                    <div class="">
+								        {% for deck in decks %}
+                                            <form action="/cards/{{card.id}}/decks/{{deck.id}}" method="POST">
+                                                <button class="col btn btn-md btn-primary my-1">{{deck.deck_name}}</button>
+                                            </form>
+                                        {% endfor %}
+							        </div>
+						        </div>
                             </div>
                         </div>
 					</div>
