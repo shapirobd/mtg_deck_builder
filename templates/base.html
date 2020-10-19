@@ -74,23 +74,53 @@
 					</li>
 					#}
 				</ul>
-				<form class="form-inline my-2 my-lg-0">
-					<input
-						class="form-control mr-sm-2"
-						type="search"
-						placeholder="Search"
-						aria-label="Search"
-					/>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-						Search
-					</button>
+
+				<div class="nav-item align-items-baseline">
+					<a class="nav-link" href="/friends">
+						<i class="fas fa-user-friends"></i>
+					</a>
+				</div>
+
+				<form class="form-inline my-2 my-lg-0" action="/search">
+					<div class="input-group">
+						<input
+							type="text"
+							class="form-control input-group-append"
+							name="search-term"
+							placeholder="Search..."
+							aria-label="search-term"
+							aria-describedby="button-addon2"
+						/>
+						<select
+							class="custom-select"
+							name="search-category"
+							aria-label="Example select with button addon"
+						>
+							<option selected>Choose...</option>
+							<option value="card">Cards</option>
+							<option value="deck">Decks</option>
+							<option value="friend">Friends</option>
+							<option value="user">Users</option>
+						</select>
+
+						<div class="input-group-append">
+							<button
+								class="btn btn-outline-light"
+								type="submit"
+								id="button-addon2"
+							>
+								Search
+							</button>
+						</div>
+					</div>
 				</form>
 				{% if g.user %}
-				<p class="nav-item">
+				<div class="align-items-baseline">
 					<a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true"
 						>Logout</a
 					>
-				</p>
+				</div>
+
 				{% else %} {% endif %}
 			</div>
 		</nav>

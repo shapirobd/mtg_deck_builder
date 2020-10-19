@@ -227,3 +227,24 @@ def delete_from_deck(card_id, deck_id):
         db.session.commit()
 
         return redirect(f'/decks/{deck_id}')
+
+
+@app.route('/search')
+def search():
+    args = request.args
+    term = request.args['search-term']
+    category = request.args['search-category']
+
+    if category == 'card':
+        cards = Card.query.filter(Card.name == term).all()
+        decks = Deck.query.all()
+
+        bookmarks = Bookmark.query.all()
+        bookmarked_card_ids = [bookmark.card_id for bookmark in bookmarks]
+        type_form = TypeForm()
+        type_form.card_type.choices = TYPES
+
+        power_form = PowerForm()
+        toughness_form = ToughnessForm()
+
+        return render_template('home.html', cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
