@@ -211,11 +211,19 @@ def add_to_deck(card_id, deck_id):
         card = Card.query.get(card_id)
         deck = Deck.query.get(deck_id)
 
-        card_deck = CardDeck(card_id=card_id, deck_id=deck_id)
-
         deck.cards.append(card)
 
-        db.session.add(card_deck)
-        db.session.add(card)
         db.session.commit()
         return redirect('/home')
+
+
+@app.route('/cards/<int:card_id>/decks/<int:deck_id>/delete', methods=['POST'])
+def delete_from_deck(card_id, deck_id):
+    if g.user:
+        card_deck = CardDeck.query.filter(
+            CardDeck.card_id == card_id and CardDeck.deck_id == deck_id).first()
+
+        db.session.delete(card_deck)
+        db.session.commit()
+
+        return redirect(f'/decks/{deck_id}')

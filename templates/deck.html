@@ -134,16 +134,9 @@
                                         <button class="col btn btn-md btn-primary"><i class="far fa-bookmark"></i></button>
                                     </form>
                                 {% endif %}
-                                {# <button
-							        class="col btn btn-sm btn-secondary ml-1"
-							        type="button"
-							        data-toggle="collapse"
-							        data-target="#add-{{card.id}}"
-							        aria-expanded="false"
-							        aria-controls="collapseExample"
-						        >
-							        Add to Deck
-						        </button> #}
+                                <form action="/cards/{{card.id}}/decks/{{deck.id}}/delete" method='POST'>
+                                    <button class="col btn btn-sm btn-danger ml-1">Remove from Deck</button>
+                                </form>
                             </div>
                         </div>
                         {# <div class="">
