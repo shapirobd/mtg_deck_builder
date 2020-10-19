@@ -106,7 +106,7 @@
 							alt="..."
 						/>
 						<button
-							class="btn btn-secondary my-1"
+							class="btn btn-sm btn-secondary my-1"
 							type="button"
 							data-toggle="collapse"
 							data-target="#info-{{card.id}}"
@@ -125,7 +125,20 @@
 								{% else %} {% endif %} {% endfor %}
 							</div>
 						</div>
-						<a href="#" class="btn btn-primary">Add to Deck</a>
+                        <div class="col">
+                            <div class="row">
+                                {% if card.id in bookmarked_card_ids %}
+                                    <form action="/card/{{card.id}}/unbookmark" method='POST'>
+                                        <button class="col-2 btn btn-md btn-primary"><i class="fas fa-bookmark"></i></button>
+                                    </form>
+                                {% else %}
+                                    <form action="/card/{{card.id}}/bookmark" method='POST'>
+                                        <button class="col-2 btn btn-md btn-primary"><i class="far fa-bookmark"></i></button>
+                                    </form>
+                                {% endif %}
+						        <a href="#" class="col btn btn-md btn-primary ml-1">Add to Deck</a>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				{% endfor %}
