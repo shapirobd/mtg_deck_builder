@@ -60,6 +60,12 @@ def create_deck():
 
             deck = Deck(deck_name=form.deck_name.data,
                         deck_type=form.deck_type.data, username=session[CURR_USER_KEY])
+
+            if 'card-to-add' in request.args:
+                card_id = int(request.args['card-to-add'])
+                card_to_add = Card.query.get(card_id)
+                deck.cards.append(card_to_add)
+
             db.session.add(deck)
             db.session.commit()
 
