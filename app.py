@@ -8,7 +8,7 @@ import mtgsdk
 from flask import Flask, session, request, render_template, redirect, g, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Friendship, Message, Card, Bookmark, Deck, CardDeck, Post
-from forms import LoginForm, RegisterForm, TypeForm, PowerForm, ToughnessForm, DeckForm
+from forms import LoginForm, RegisterForm, TypeForm, PowerForm, ToughnessForm, DeckForm, EditUserForm
 
 
 app = Flask(__name__)
@@ -267,6 +267,36 @@ def show_friends():
 def user_profile(username):
     user = User.query.get(username)
     return render_template('user.html', user=user)
+
+
+@app.route('/users/<string:username>/edit', methods=['GET', 'POST'])
+def edit_profile(username):
+    if g.user:
+        form = EditUserForm()
+        user = User.query.get(g.user.username)
+
+        if form.validate_on_submit():
+            user.email = form.email.data
+            if form.password.data == form.confirmed_password.data:
+                user.password = form.password.data
+            else:
+                flash('Passwords do not match - please try again.', 'danger')
+                return redirect(f'/users/{user.username}/edit')
+
+            user.image_url = form.image_url.data or "/static/images/default_prof_pic.png"
+
+            db.session.add(user)
+            db.session.commit()
+
+            return redirect('/home')
+
+        form.email.data = user.email
+        form.password.data = user.password
+        form.confirmed_password.data = user.password
+        form.image_url.data = user.image_url
+
+        return render_template('edit_user.html', form=form)
+    return render_template('/login')
 
 
 @app.route('/search')

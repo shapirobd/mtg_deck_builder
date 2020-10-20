@@ -20,6 +20,15 @@ class RegisterForm(FlaskForm):
     image_url = FileField('Profile Picture')
 
 
+class EditUserForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired()])
+    password = PasswordField("Password", validators=[
+                             InputRequired(), Length(min=8)])
+    confirmed_password = PasswordField(
+        "Confirm Password", validators=[InputRequired()])
+    image_url = StringField('Profile Picture')
+
+
 class DeckForm(FlaskForm):
     deck_name = StringField('Name', validators=[InputRequired()])
     deck_type = SelectField('Deck Type')
