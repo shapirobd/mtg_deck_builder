@@ -3,6 +3,7 @@ import pdb
 import os
 
 import mtgsdk
+import flask_paginate
 
 # from mtgsdk import Type
 from flask import Flask, session, request, render_template, redirect, g, flash
@@ -57,10 +58,11 @@ def welcome():
     """
     if not g.user:
         return render_template('welcome.html')
+
     return redirect('/home')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@ app.route('/login', methods=['GET', 'POST'])
 def login():
     """
     GET: Renders the template for a user to login
@@ -84,7 +86,7 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@ app.route('/register', methods=['GET', 'POST'])
 def register():
     """
     GET: Renders the template for a user to login
@@ -110,7 +112,19 @@ def register():
 
 @app.route('/home')
 def show_homepage():
-    cards = Card.query.all()
+
+    page = 1
+    if 'page' in request.args:
+        page = int(request.args['page'])
+
+    base_url = '/home?'
+
+    first_card_id = ((page-1)*100) + 1
+    last_card_id = (page*100) + 1
+    id_range = range(first_card_id, last_card_id)
+
+    cards = Card.query.filter(Card.id.in_(id_range)).all()
+
     decks = Deck.query.all()
 
     bookmarks = Bookmark.query.all()
@@ -121,7 +135,13 @@ def show_homepage():
     power_form = PowerForm()
     toughness_form = ToughnessForm()
 
-    return render_template('home.html', cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
+    # resp = requests.get('http://api.magicthegathering.io/v1/cards', {
+    #     'key': "$2a$10$TNyqKQQQSzVjgGXY87waZuBIKAS78.NkY2o.H004TfBU.eISv.Pt6"})
+
+    # first = resp.links['first']
+    # last = resp.links['last']
+
+    return render_template('home.html', base_url=base_url, page=page, cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
 
 
 def check_confirmed_pwd(pwd, confirmed_pwd):
@@ -130,14 +150,14 @@ def check_confirmed_pwd(pwd, confirmed_pwd):
         return redirect('/register')
 
 
-@app.route('/decks', methods=['GET', 'POST'])
+@ app.route('/decks', methods=['GET', 'POST'])
 def view_decks():
     if g.user:
         decks = g.user.decks
         return render_template('decks.html', decks=decks)
 
 
-@app.route('/decks/<int:deck_id>')
+@ app.route('/decks/<int:deck_id>')
 def show_deck(deck_id):
     deck = Deck.query.get(deck_id)
 
@@ -151,7 +171,7 @@ def show_deck(deck_id):
     return render_template('deck.html', deck=deck, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
 
 
-@app.route('/decks/<int:deck_id>/delete', methods=['POST'])
+@ app.route('/decks/<int:deck_id>/delete', methods=['POST'])
 def delete_deck(deck_id):
     deck = Deck.query.get(deck_id)
     db.session.delete(deck)
@@ -159,7 +179,7 @@ def delete_deck(deck_id):
     return redirect('/decks')
 
 
-@app.route('/new', methods=['GET', 'POST'])
+@ app.route('/new', methods=['GET', 'POST'])
 def create_deck():
 
     if g.user:
@@ -178,13 +198,13 @@ def create_deck():
     return redirect('/')
 
 
-@app.route('/logout')
+@ app.route('/logout')
 def logout():
     do_logout()
     return redirect('/login')
 
 
-@app.route('/cards/<int:card_id>/bookmark', methods=['GET', 'POST'])
+@ app.route('/cards/<int:card_id>/bookmark', methods=['GET', 'POST'])
 def add_bookmark(card_id):
     if g.user:
         bookmark = Bookmark(card_id=card_id, username=session[CURR_USER_KEY])
@@ -195,7 +215,7 @@ def add_bookmark(card_id):
     return redirect('/login')
 
 
-@app.route('/cards/<int:card_id>/unbookmark', methods=['GET', 'POST'])
+@ app.route('/cards/<int:card_id>/unbookmark', methods=['GET', 'POST'])
 def remove_bookmark(card_id):
     if g.user:
         bookmark = Bookmark.query.filter(Bookmark.card_id == card_id).first()
@@ -206,7 +226,7 @@ def remove_bookmark(card_id):
     return redirect('/login')
 
 
-@app.route('/cards/<int:card_id>/decks/<int:deck_id>', methods=['POST'])
+@ app.route('/cards/<int:card_id>/decks/<int:deck_id>', methods=['POST'])
 def add_to_deck(card_id, deck_id):
     if g.user:
         card = Card.query.get(card_id)
@@ -218,7 +238,7 @@ def add_to_deck(card_id, deck_id):
         return redirect('/home')
 
 
-@app.route('/cards/<int:card_id>/decks/<int:deck_id>/delete', methods=['POST'])
+@ app.route('/cards/<int:card_id>/decks/<int:deck_id>/delete', methods=['POST'])
 def delete_from_deck(card_id, deck_id):
     if g.user:
         card_deck = CardDeck.query.filter(
@@ -230,14 +250,14 @@ def delete_from_deck(card_id, deck_id):
         return redirect(f'/decks/{deck_id}')
 
 
-@app.route('/users/<string:username>/decks')
+@ app.route('/users/<string:username>/decks')
 def show_users_decks(username):
     user = User.query.get(username)
     decks = user.decks
     return render_template('decks.html', decks=decks)
 
 
-@app.route('/bookmarks')
+@ app.route('/bookmarks')
 def show_bookmarked_cards():
     if g.user:
         bookmarked_cards = g.user.bookmarked_cards
@@ -255,7 +275,7 @@ def show_bookmarked_cards():
     return redirect('/login')
 
 
-@app.route('/friends')
+@ app.route('/friends')
 def show_friends():
     if g.user:
         friends = g.user.friends
@@ -263,13 +283,13 @@ def show_friends():
     return redirect('/login')
 
 
-@app.route('/users/<string:username>')
+@ app.route('/users/<string:username>')
 def user_profile(username):
     user = User.query.get(username)
     return render_template('user.html', user=user)
 
 
-@app.route('/users/<string:username>/edit', methods=['GET', 'POST'])
+@ app.route('/users/<string:username>/edit', methods=['GET', 'POST'])
 def edit_profile(username):
     if g.user:
         form = EditUserForm()
@@ -299,14 +319,31 @@ def edit_profile(username):
     return render_template('/login')
 
 
-@app.route('/search')
+@app.route('/home/search')
 def search():
+
     args = request.args
-    term = request.args['search-term']
-    category = request.args['search-category']
+    term = request.args['term']
+    category = request.args['category']
+
+    base_url = f'/home/search?term={term}&category={category}&'
 
     if category == 'card':
-        cards = Card.query.filter(Card.name == term).all()
+
+        page = 1
+
+        if 'page' in request.args:
+            page = int(request.args['page'])
+
+        first_card_index = ((page-1)*100) + 1
+        last_card_index = (page*100) + 1
+        index_range = range(first_card_index, last_card_index)
+
+        all_cards = Card.query.filter(Card.name == term).all()
+
+        cards = [card for card in all_cards if (all_cards.index(
+            card) + 1) in index_range]
+
         decks = Deck.query.all()
 
         bookmarks = Bookmark.query.all()
@@ -317,7 +354,7 @@ def search():
         power_form = PowerForm()
         toughness_form = ToughnessForm()
 
-        return render_template('home.html', cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
+        return render_template('home.html', base_url=base_url, page=page, cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
 
     elif category == 'deck':
         decks = Deck.query.filter(

@@ -88,7 +88,7 @@ class Card(db.Model):
     image_url = db.Column(db.Text)
     text = db.Column(db.Text)
     card_type = db.Column(db.Text, nullable=False)
-    power = db.Column(db.Integer)
+    power = db.Column(db.Integer or db.String)
     toughness = db.Column(db.Integer)
     colors = db.Column(db.Text, nullable=False)
     rarity = db.Column(db.Text, nullable=False)
@@ -105,8 +105,13 @@ class Card(db.Model):
 
             image_url = card.get('imageUrl', 'static/images/mtg_default.jpg')
             text = card.get('text')
+
             power = card.get('power')
+            if isinstance(power, str) and power.find('*') != -1:
+                power = 0
             toughness = card.get('toughness')
+            if isinstance(toughness, str) and toughness.find('*') != -1:
+                toughness = 0
 
             new_card = Card(name=card['name'], image_url=image_url, text=text, card_type=card['type'],
                             power=power, toughness=toughness, rarity=card['rarity'], set_name=card['setName'], colors=colors)
