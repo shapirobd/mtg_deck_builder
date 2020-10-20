@@ -86,7 +86,8 @@ def search():
         last_card_index = (page*100) + 1
         index_range = range(first_card_index, last_card_index)
 
-        all_cards = Card.query.filter(Card.name == term).all()
+        all_cards = Card.query.filter(
+            Card.name.ilike(f'%{term}%')).all()
 
         cards = [card for card in all_cards if (all_cards.index(
             card) + 1) in index_range]
