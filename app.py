@@ -37,14 +37,14 @@ def do_logout():
 
         user = User.query.get(session[CURR_USER_KEY])
         del session[CURR_USER_KEY]
-        flash(f"Goodbye, {user.username}!")
+        # flash(f"Goodbye, {user.username}!")
 
 
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global"""
     if CURR_USER_KEY in session:
-        g.user = session[CURR_USER_KEY]
+        g.user = User.query.get(session[CURR_USER_KEY])
     else:
         g.user = None
 
@@ -76,7 +76,7 @@ def login():
             username=form.username.data, password=form.password.data)
         if user:
             db.session.add(user)
-            db.session.commit(user)
+            db.session.commit()
             session[CURR_USER_KEY] = form.username.data
             return redirect('/home')
         flash('Username or password is incorrect', 'danger')
@@ -132,8 +132,9 @@ def check_confirmed_pwd(pwd, confirmed_pwd):
 
 @app.route('/decks', methods=['GET', 'POST'])
 def view_decks():
-    decks = Deck.query.all()
-    return render_template('decks.html', decks=decks)
+    if g.user:
+        decks = g.user.decks
+        return render_template('decks.html', decks=decks)
 
 
 @app.route('/decks/<int:deck_id>')
@@ -229,6 +230,26 @@ def delete_from_deck(card_id, deck_id):
         return redirect(f'/decks/{deck_id}')
 
 
+@app.route('/users/<string:username>/decks')
+def show_users_decks(username):
+    user = User.query.get(username)
+    decks = user.decks
+    return render_template('decks.html', decks=decks)
+
+
+@app.route('/friends')
+def show_friends():
+    if g.user:
+        friends = g.user.friends
+        return render_template('friends.html')
+
+
+@app.route('/users/<string:username>')
+def user_profile(username):
+    user = User.query.get(username)
+    return render_template('user.html', user=user)
+
+
 @app.route('/search')
 def search():
     args = request.args
@@ -248,3 +269,12 @@ def search():
         toughness_form = ToughnessForm()
 
         return render_template('home.html', cards=cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
+
+    elif category == 'deck':
+        decks = Deck.query.filter(
+            Deck.deck_name == term or Deck.deck_type == term).all()
+        return render_template('decks.html', decks=decks)
+
+    elif category == 'friend':
+        friends = [friend for friend in User.friends if friend.name == term]
+        return render_template('friends.html', friends=friends)

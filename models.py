@@ -29,7 +29,8 @@ class User(db.Model):
                          unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
-    image_url = db.Column(db.Text)
+    image_url = db.Column(
+        db.Text, default="/static/images/default_prof_pic.png")
     bookmarked_cards = db.relationship(
         'Card', secondary='bookmarks', backref='user')
     decks = db.relationship('Deck', backref='user')

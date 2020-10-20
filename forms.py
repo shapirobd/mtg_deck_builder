@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, RadioField, SelectField
+from wtforms import StringField, PasswordField, IntegerField, RadioField, SelectField, FileField
 from wtforms.validators import InputRequired, Length
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -17,6 +17,7 @@ class RegisterForm(FlaskForm):
                              InputRequired(), Length(min=8)])
     confirmed_password = PasswordField(
         "Confirm Password", validators=[InputRequired()])
+    image_url = FileField('Profile Picture')
 
 
 class DeckForm(FlaskForm):

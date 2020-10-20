@@ -37,6 +37,10 @@ ul {
 	height: 87vh;
 }
 
+.nav-img {
+	height: 25px;
+}
+
 /* input[type="checkbox"] {
 	display: none;
 }
