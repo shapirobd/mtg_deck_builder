@@ -237,11 +237,30 @@ def show_users_decks(username):
     return render_template('decks.html', decks=decks)
 
 
+@app.route('/bookmarks')
+def show_bookmarked_cards():
+    if g.user:
+        bookmarked_cards = g.user.bookmarked_cards
+        decks = Deck.query.all()
+
+        bookmarked_card_ids = [
+            bookmarked_card.id for bookmarked_card in bookmarked_cards]
+        type_form = TypeForm()
+        type_form.card_type.choices = TYPES
+
+        power_form = PowerForm()
+        toughness_form = ToughnessForm()
+
+        return render_template('bookmarks.html', bookmarked_cards=bookmarked_cards, decks=decks, type_form=type_form, power_form=power_form, toughness_form=toughness_form, bookmarked_card_ids=bookmarked_card_ids)
+    return redirect('/login')
+
+
 @app.route('/friends')
 def show_friends():
     if g.user:
         friends = g.user.friends
-        return render_template('friends.html')
+        return render_template('friends.html', friends=friends)
+    return redirect('/login')
 
 
 @app.route('/users/<string:username>')

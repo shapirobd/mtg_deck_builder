@@ -1,0 +1,166 @@
+{% extends "base.html" %} {% block content %}
+<div class="row" id="main-home">
+	<div class="container-fluid col-2 bg-secondary py-3 px-0 mx-0" id="filter-panel">
+		{# TYPE FORM #} {{type_form.hidden_tag()}}
+		<div class="row justify-content-center">
+			<div class="col">
+				<button
+					class="btn btn-sm btn-secondary col rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#type-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Type <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="type-form">
+					<div class="card card-body bg-dark text-white rounded-0">
+                        <div class="col px-2">
+						{% for field in type_form if field.widget.input_type != 'hidden' %}
+						{% if field.type == "RadioField" %} {{field(class_="text-small")}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# POWER FORM #} {{power_form.hidden_tag()}}
+		<div class="row justify-content-center">
+			<div class="col">
+				<button
+					class="btn btn-sm btn-secondary col-12 rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#power-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Power <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="power-form">
+					<div class="card card-body bg-dark text-white col-12 rounded-0">
+                        <div class="col px-2">
+						{% for field in power_form if field.widget.input_type != 'hidden' %}
+						{% if field.type == "RadioField" %} {{field}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+			{# TOUGHNESS FORM #} {{toughness_form.hidden_tag()}}
+		<div class="row justify-content-center">
+            <div class="col">
+				<button
+					class="btn btn-sm btn-secondary col-12 rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#toughness-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Toughness <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="toughness-form">
+					<div class="card card-body bg-dark text-white col-12 rounded-0">
+                        <div class="col px-2">
+						{% for field in toughness_form if field.widget.input_type !=
+						'hidden' %} {% if field.type == "RadioField" %} {{field}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+                        </div>
+					</div>
+				</div>
+			</div>
+        </div>
+		<div class="row justify-content-center">
+            <div class="col">
+			    <button class="btn btn-primary btn-md col my-2">Filter</button>
+            </div>
+		</div>
+		</div>
+
+		<div class="container scroll" id="main">
+            <h1 class="display-3 text-white mx-4 mt-4">Bookmarks</h1>
+			<div class="row">
+				{% for card in bookmarked_cards %}
+				<div class="col-3">
+					<div class="card text-white bg-transparent my-4 mx-3" style="width: 15rem">
+						<img
+							src="{{card.image_url}}"
+							class="card-img-top mtg-card"
+							alt="..."
+						/>
+						<button
+							class="btn btn-sm btn-secondary my-1"
+							type="button"
+							data-toggle="collapse"
+							data-target="#info-{{card.id}}"
+							aria-expanded="false"
+							aria-controls="collapseExample"
+						>
+							Show Info
+						</button>
+						<div class="collapse" id="info-{{card.id}}">
+							<div class="card-body">
+								<h5 class="card-title">{{card.name}}</h5>
+								{% for attr, value in card.__dict__.items() %} {% if attr !=
+								'image_url' and attr != 'text' and attr != '_sa_instance_state'
+								and value and value != '' %}
+								<p><b>{{attr}}:</b> {{value}}</p>
+								{% else %} {% endif %} {% endfor %}
+							</div>
+						</div>
+                        <div class="col">
+                            <div class="row">
+
+                                    <form action="/cards/{{card.id}}/unbookmark" method='POST'>
+                                        <button class="col btn btn-md btn-primary"><i class="fas fa-bookmark"></i></button>
+                                    </form>
+
+                                <button
+							        class="col btn btn-sm btn-secondary ml-1"
+							        type="button"
+							        data-toggle="collapse"
+							        data-target="#add-{{card.id}}"
+							        aria-expanded="false"
+							        aria-controls="collapseExample"
+						        >
+							        Add to Deck
+						        </button>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="row justify-content-center">
+                                <div class="collapse col" id="add-{{card.id}}">
+                                    <div class="">
+								        {% for deck in decks %}
+                                            <form action="/cards/{{card.id}}/decks/{{deck.id}}" method="POST">
+                                                <button class="col btn btn-md btn-primary my-1">{{deck.deck_name}}</button>
+                                            </form>
+                                        {% endfor %}
+							        </div>
+						        </div>
+                            </div>
+                        </div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+</div>
