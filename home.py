@@ -106,7 +106,8 @@ def search():
 
     elif category == 'deck':
         decks = Deck.query.filter(
-            Deck.deck_name == term or Deck.deck_type == term).all()
+            (Deck.deck_name.ilike(f'%{term}%')) | (
+                Deck.deck_type.ilike(f'%{term}%'))).all()
         return render_template('decks.html', decks=decks)
 
     elif category == 'friend':
