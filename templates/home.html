@@ -58,7 +58,7 @@
 			</div>
 		</div>
 
-			{# TOUGHNESS FORM #} {{toughness_form.hidden_tag()}}
+		{# TOUGHNESS FORM #} {{toughness_form.hidden_tag()}}
 		<div class="row justify-content-center">
             <div class="col">
 				<button
@@ -86,6 +86,90 @@
 				</div>
 			</div>
         </div>
+		{# SET FORM #} {{set_form.hidden_tag()}}
+		<div class="row justify-content-center">
+			<div class="col">
+				<button
+					class="btn btn-sm btn-secondary col rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#set-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Set <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="set-form">
+					<div class="card card-body bg-dark text-white rounded-0">
+                        <div class="col px-2">
+						{% for field in set_form if field.widget.input_type != 'hidden' %}
+						{% if field.type == "RadioField" %} {{field(class_="text-small")}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# RARITY FORM #} {{rarity_form.hidden_tag()}}
+		<div class="row justify-content-center">
+			<div class="col">
+				<button
+					class="btn btn-sm btn-secondary col rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#rarity-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Rarity <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="rarity-form">
+					<div class="card card-body bg-dark text-white rounded-0">
+                        <div class="col px-2">
+						{% for field in rarity_form if field.widget.input_type != 'hidden' %}
+						{% if field.type == "RadioField" %} {{field(class_="text-small")}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# COLOR FORM #} {{color_form.hidden_tag()}}
+		<div class="row justify-content-center">
+			<div class="col">
+				<button
+					class="btn btn-sm btn-secondary col rounded-0"
+					type="button"
+					data-toggle="collapse"
+					data-target="#color-form"
+					aria-expanded="false"
+					aria-controls="collapseExample"
+				>
+					Color <i class="fas fa-caret-down"></i>
+				</button>
+
+				<div class="collapse" id="color-form">
+					<div class="card card-body bg-dark text-white rounded-0">
+                        <div class="col px-2">
+						{% for field in color_form if field.widget.input_type != 'hidden' %}
+						{% if field.type == "RadioField" %} {{field(class_="text-small")}} {% else %}
+						{{field(class_="form-control")}} {% endif %} {% for error in
+						field.errors %}
+						<span class="form-text text-danger">{{error}}</span>
+						{% endfor %} {% endfor %}
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row justify-content-center">
             <div class="col">
 			    <button class="btn btn-primary btn-md col my-2">Filter</button>
