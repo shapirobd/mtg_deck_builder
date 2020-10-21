@@ -87,6 +87,11 @@ def search():
         friends = [friend for friend in User.friends if friend.name == term]
         return render_template('friends.html', friends=friends)
 
+    elif category == 'user':
+        users = [user for user in User.query.filter(
+            User.username.ilike(f'%{term}%')).all()]
+        return render_template('users.html', users=users)
+
 
 def render_card_search(term, category, req_args):
 

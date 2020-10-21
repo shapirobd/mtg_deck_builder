@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container my-5">
+	<div class="row justify-content-center">
+		<div class="col-6 text-white">
+			{% for user in users %}
+			<div class="col-6 text-white">
+				<img src="{{user.image_url}}" class="img-thumbnail mb-2" alt="" />
+				<h3>{{user.username}}</h3>
+				<h5>Decks: {{user.decks | length}}</h5>
+				<a
+					class="btn btn-sm btn-primary col mt-3"
+					href="/users/{{user.username}}"
+					>View Profile</a
+				>
+				<a
+					class="btn btn-sm btn-primary col mt-3"
+					href="/users/{{user.username}}/decks"
+					>View Decks</a
+				>
+				<a
+					class="btn btn-sm btn-primary col my-1"
+					href="/users/{{user.username}}/friend"
+					>Add Friend</a
+				>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
