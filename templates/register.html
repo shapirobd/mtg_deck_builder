@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
 %}
 <div class="container">
-	<div class="row my-5 justify-content-center">
-		<div class="col-xs-6 col-md-6 col-lg-4 my-5">
-			<h1 class="display-4 text-white">Register</h1>
+	<div class="row justify-content-center">
+		<div class="col-xs-6 col-md-6 col-lg-4 my-4">
+			<h1 class="display-4 text-white text-center">Register</h1>
 			<form method="POST" action="" class="my-3">
 				{{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
 				'hidden' %}
@@ -14,12 +14,18 @@
 					{% endfor %}
 				</p>
 				{% endfor %}
-				<button class="btn btn-success" type="submit">Register</button>
+				<div class="row justify-content-center">
+					<button class="btn btn-success" type="submit">Register</button>
+				</div>
 				{% for category, message in get_flashed_messages(with_categories=True)
 				%}
 				<p class="text-{{category}} text-right">{{ message }}</p>
 				{% endfor %}
 			</form>
+			<p class="text-center text-white my-3">
+				If you already have an account,
+				<a href="/login">click here to login.</a>
+			</p>
 		</div>
 	</div>
 </div>

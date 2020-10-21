@@ -1,41 +1,29 @@
 {% extends "base.html" %} {% block content %}
 
-<div class="container">
-	<div class="container" id="main">
-		<div class="row">
-			{% for deck in decks %}
-			<div class="col-6">
-				<div class="card text-white bg-transparent my-4" style="width: 18rem">
-					<img
-						src="/static/images/mtg_default.jpg"
-						class="card-img-top mtg-card"
-						alt="..."
-					/>
-					<div class="row justify-content-center">
-						<h4 class="card-title mt-2">{{deck.deck_name}}</h4>
-					</div>
-					<div class="row justify-content-center">
-						<h6 class="">{{deck.deck_type}}</h6>
-					</div>
-					<div class="row justify-content-around my-1">
-						<form action="/decks/{{deck.id}}/delete" method="POST">
-							<button
-								class="btn btn-danger"
-								data-toggle="collapse"
-								data-target="#info-{{deck.id}}"
-								aria-expanded="false"
-								aria-controls="collapseExample"
-							>
-								Delete
-							</button>
-						</form>
-						<a href="/decks/{{deck.id}}" class="btn btn-primary">View Deck</a>
-					</div>
-				</div>
+<div class="container my-5">
+	<div class="row justify-content-center">
+		<div class="col-6 text-white">
+			{% for friend in friends %}
+			<div class="col-6 text-white">
+				<img src="{{friend.image_url}}" class="img-thumbnail mb-2" alt="" />
+				<h3>{{friend.username}}</h3>
+				<h5>Decks: {{friend.decks | length}}</h5>
+				<a
+					class="btn btn-sm btn-primary col my-1"
+					href="/users/{{friend.username}}"
+					>View Profile</a
+				>
+				<a
+					class="btn btn-sm btn-primary col my-1"
+					href="/users/{{friend.username}}/decks"
+					>View Decks</a
+				>
+				<form action="/remove_friend/{{friend.username}}" method="POST">
+					<button class="btn btn-sm btn-danger col my-1">Remove Friend</button>
+				</form>
 			</div>
-			{% endfor %}
 		</div>
+		{% endfor %}
 	</div>
 </div>
-
 {% endblock %}

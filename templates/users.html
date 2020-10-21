@@ -9,20 +9,24 @@
 				<h3>{{user.username}}</h3>
 				<h5>Decks: {{user.decks | length}}</h5>
 				<a
-					class="btn btn-sm btn-primary col mt-3"
+					class="btn btn-sm btn-primary col my-1"
 					href="/users/{{user.username}}"
 					>View Profile</a
 				>
 				<a
-					class="btn btn-sm btn-primary col mt-3"
+					class="btn btn-sm btn-primary col my-1"
 					href="/users/{{user.username}}/decks"
 					>View Decks</a
 				>
-				<a
-					class="btn btn-sm btn-primary col my-1"
-					href="/users/{{user.username}}/friend"
-					>Add Friend</a
-				>
+				{% if user.username != g.user.username and user not in g.user.friends %}
+				<form action="/add_friend/{{user.username}}" method="POST">
+					<button class="btn btn-sm btn-primary col my-1">Add Friend</button>
+				</form>
+				{% elif user in g.user.friends %}
+				<form action="/remove_friend/{{user.username}}" method="POST">
+					<button class="btn btn-sm btn-danger col my-1">Remove Friend</button>
+				</form>
+				{% endif %}
 			</div>
 		</div>
 		{% endfor %}

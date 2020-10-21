@@ -26,3 +26,23 @@ def show_friends():
         friends = g.user.friends
         return render_template('friends.html', friends=friends)
     return redirect('/login')
+
+
+@friends_blueprint.route('/add_friend/<string:friend_username>', methods=['POST'])
+def add_friend(friend_username):
+    if g.user:
+        friend = User.query.get(friend_username)
+        g.user.friends.append(friend)
+        db.session.commit()
+        return redirect('/friends')
+    return redirect('/login')
+
+
+@friends_blueprint.route('/remove_friend/<string:friend_username>', methods=['POST'])
+def remove_friend(friend_username):
+    if g.user:
+        friend = User.query.get(friend_username)
+        g.user.friends.remove(friend)
+        db.session.commit()
+        return redirect('/friends')
+    return redirect('/login')

@@ -17,7 +17,7 @@ class RegisterForm(FlaskForm):
                              InputRequired(), Length(min=8)])
     confirmed_password = PasswordField(
         "Confirm Password", validators=[InputRequired()])
-    image_url = FileField('Profile Picture')
+    image_url = StringField('Profile Picture')
 
 
 class EditUserForm(FlaskForm):

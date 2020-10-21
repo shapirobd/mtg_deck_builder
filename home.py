@@ -84,7 +84,8 @@ def search():
         return render_template('decks.html', decks=decks)
 
     elif category == 'friend':
-        friends = [friend for friend in User.friends if friend.name == term]
+        friends = [friend for friend in g.user.friends if friend.username == term]
+        print(g.user.friends)
         return render_template('friends.html', friends=friends)
 
     elif category == 'user':
