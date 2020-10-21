@@ -41,6 +41,10 @@ ul {
 	height: 25px;
 }
 
+.filter-dropdown {
+	max-height: 400px;
+}
+
 /* input[type="checkbox"] {
 	display: none;
 }

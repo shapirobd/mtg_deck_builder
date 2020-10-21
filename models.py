@@ -117,6 +117,20 @@ class Card(db.Model):
                             power=power, toughness=toughness, rarity=card['rarity'], set_name=card['setName'], colors=colors)
             db.session.add(new_card)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'image_url': self.image_url,
+            'text': self.text,
+            'card_type': self.card_type,
+            'power': self.power,
+            'toughness': self.toughness,
+            'colors': self.colors,
+            'rarity': self.rarity,
+            'set_name': self.set_name,
+        }
+
 
 class Bookmark(db.Model):
     __tablename__ = 'bookmarks'
@@ -124,6 +138,13 @@ class Bookmark(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     username = db.Column(db.ForeignKey('users.username'))
     card_id = db.Column(db.ForeignKey('cards.id'))
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'card_id': self.card_id
+        }
 
 
 class Deck(db.Model):
